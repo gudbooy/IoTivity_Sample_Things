@@ -1,94 +1,27 @@
-#include "simple_server_temp.h"
+#include "simple_server_humidity.h"
 
-void TempResource::createResource()
+OCRepresentation HumidityResource::get()
 {
-	std::string resourceURI = this->m_tempUri;
-	std::string resourceTypeName = "core.temp";
-	std::string resourceInterface = DEFAULT_INTERFACE;
-	uint8_t resourceProperty;
-	resourceProperty = OC_DISCOVERABLE | OC_OBSERVABLE;
-	EntityHandler cb = std::bind(&TempResource::entityHandler, this, PH::_1);
+	m_rep.setValue("state", m_state);
+	m_rep.setValue("humidity", m_humidity);
+	return m_rep;
+}
 
-	OCStackResult result = OCPlatform::registerResource(
-			m_resourceHandle, resourceURI, resourceTypeName,
-			resourceInterface, cb, resourceProperty);
+void HumidityResource::put(OCRepresentation& rep)
+{
+	try{
+		if (rep.getValue("state", m_state))
+			cout << "\t\t\t\t" << "state: " << m_state << endl;
+		else
+			cout << "\t\t\t\t" << "state not found in the representation" << endl;
 
-	if (OC_STACK_OK != result)
-	{
-		cout << "Resource creation was unsuccessful\n";
+		if (rep.getValue("humidity", m_humidity))
+			cout << "\t\t\t\t" << "humidity: " << m_humidity << endl;
+		else
+			cout << "\t\t\t\t" << "humidity not found in the representation" << endl;
 	}
-}
-
-void TempResource::put(OCRepresentation& rep)
-{
-		
-}
-
-OCRepresentation TempResource::get()
-{	
-
-	this->m_tempRep.setValue("temp", this->m_temp);
-	return this->m_tempRep;
-}
-
-OCRepresentation post(OCRepresentation& rep)
-{
-	return this->m_tempRep;
-}
-
-OCEntityHandlerResult TempResource::entityHandler(std::shared_ptr<OCResourceRequest> request)
-{
-	cout << "\tIn Server CPP entity handler:\n";
-	OCEntityHandlerResult ehResult = OC_EH_ERROR;
-	if(request)
+	catch(exception& e)
 	{
-		std::string requestType = request->getRequestType();
-		int requestFlag = request->getRequestHandlerFlag();
-		if(requestFlag & RequestHandlerFlag::RequestFlag)
-		{
-			cout << "\t\trequestFlag : Request\n";		
-			auto pResponse = std::make_shared<OC::OCResourceResponse>();
-			pResponse->setRequestHandle(request->getRequestHandle());
-			pResponse->setResourceHandle(request->getResourceHandle());
-
-			// Check for query params (if any)
-			QueryParamsMap queries = request->getQueryParameters();
-
-			if (!queries.empty())
-			{
-				std::cout << "\nQuery processing upto entityHandler" << std::endl;
-			}
-			for (auto it : queries)
-			{
-				std::cout << "Query key: " << it.first << " value : " << it.second
-					<< std:: endl;
-			}
-			if(requestType == "GET")
-			{
-				cout << "GET Request\n";
-				ehResult = OC_EH_OK;
-
-			}
-			else if(requestType == "PUT")
-			{
-				cout << "PUT Request\n";
-				ehResult = OC_EH_OK;
-
-			}
-			else if(requestType == "DELETE")
-			{
-				cout << "Delete Request\n";
-				ehResult = OC_EH_OK;
-			}
-
-		}
-		if(requestFlag & RequestHandlerFlag::ObserverFlag)
-		{
-			cout << "Observe Request\n";
-		}
+		cout << e.what() << endl;
 	}
-	else
-		cout << "Request Invalid\n";
-
-	return ehResult;
 }

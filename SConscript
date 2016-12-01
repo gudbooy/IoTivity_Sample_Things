@@ -87,7 +87,8 @@ if 'CLIENT' in examples_env.get('RD_MODE'):
 	examples_env.AppendUnique(CPPDEFINES = ['RD_CLIENT'])
 
 def make_single_file_cpp_program(program_name):
-	return examples_env.Program(program_name, ['main.cpp', 'simple_server_temp.cpp'])
+	return examples_env.Program(program_name, ['main.cpp', 'simple_server_temp.cpp', 
+			'resourceImpl.cpp', 'simple_server_humidity.cpp'])
 
 ######################################################################
 # Source files and Targets

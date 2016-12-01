@@ -1,13 +1,13 @@
-#include "simple_server_temp.h"
-
-void TempResource::createResource()
+//#include "simple_server_temp.h"
+#include "resource.h"
+void Resource::createResource()
 {
-	std::string resourceURI = this->m_tempUri;
-	std::string resourceTypeName = "core.temp";
+	std::string resourceTypeName = m_uri;
+	std::string resourceURI = m_resourceTypeName;
 	std::string resourceInterface = DEFAULT_INTERFACE;
 	uint8_t resourceProperty;
 	resourceProperty = OC_DISCOVERABLE | OC_OBSERVABLE;
-	EntityHandler cb = std::bind(&TempResource::entityHandler, this, placeholders::_1);
+	EntityHandler cb = std::bind(&Resource::entityHandler, this, placeholders::_1);
 
 	OCStackResult result = OCPlatform::registerResource(
 			m_resourceHandle, resourceURI, resourceTypeName,
@@ -19,26 +19,12 @@ void TempResource::createResource()
 	}
 }
 
-void TempResource::put(OCRepresentation& rep)
+OCResourceHandle Resource::getHandle()
 {
-	try
-	{
-
-	}
-	catch (exception& e)
-	{
-
-	}
+	return m_resourceHandle;
 }
 
-OCRepresentation TempResource::get()
-{	
-
-	this->m_tempRep.setValue("temp", this->m_temp);
-	return this->m_tempRep;
-}
-
-OCEntityHandlerResult TempResource::entityHandler(std::shared_ptr<OCResourceRequest> request)
+OCEntityHandlerResult Resource::entityHandler(std::shared_ptr<OCResourceRequest> request)
 {
 	cout << "\tIn Server CPP entity handler:\n";
 	OCEntityHandlerResult ehResult = OC_EH_ERROR;
@@ -68,14 +54,25 @@ OCEntityHandlerResult TempResource::entityHandler(std::shared_ptr<OCResourceRequ
 			if(requestType == "GET")
 			{
 				cout << "GET Request\n";
-				ehResult = OC_EH_OK;
-
+				pResponse->setErrorCode(200);
+				pResponse->setResponseResult(OC_EH_OK);
+				pResponse->setResourceRepresentation(get());
+				if(OC_STACK_OK == OCPlatform::sendResponse(pResponse)){
+					ehResult = OC_EH_OK;
+				}
 			}
 			else if(requestType == "PUT")
 			{
 				cout << "PUT Request\n";
-				ehResult = OC_EH_OK;
-
+				OCRepresentation rep = request->getResourceRepresentation();	
+				put(rep);
+				pResponse->setErrorCode(200);
+				pResponse->setResponseResult(OC_EH_OK);
+				pResponse->setResourceRepresentation(get());
+				if(OC_STACK_OK == OCPlatform::sendResponse(pResponse))
+				{
+					ehResult = OC_EH_OK;
+				}
 			}
 			else if(requestType == "DELETE")
 			{

@@ -1,7 +1,7 @@
 #ifndef _SIMPLE_SERVER_TEMP_H_
 #define _SIMPLE_SERVER_TEMP_H_
 
-#include "common.h"
+#include "resource.h"
 class TempResource : public Resource
 {
 	public:
@@ -26,7 +26,7 @@ class TempResource : public Resource
 		void createResource();
 		void put(OCRepresentation& rep);
 		OCRepresentation get();
-		OCRepresentation post(OCRepresentation& rep);
+
 	private:
 		OCEntityHandlerResult entityHandler(std::shared_ptr<OCResourceRequest> request);
 };

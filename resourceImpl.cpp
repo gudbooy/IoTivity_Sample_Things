@@ -17,6 +17,8 @@ void Resource::createResource()
 	{
 		cout << "Resource creation was unsuccessful\n";
 	}
+	th = new thread(sensorValueReadThread, this);
+	th->detach();
 }
 
 OCResourceHandle Resource::getHandle()
@@ -26,7 +28,7 @@ OCResourceHandle Resource::getHandle()
 
 OCEntityHandlerResult Resource::entityHandler(std::shared_ptr<OCResourceRequest> request)
 {
-	cout << "\tIn Server CPP entity handler:\n";
+	cout << "Entity Handler - resource URI : " << m_uri << endl;
 	OCEntityHandlerResult ehResult = OC_EH_ERROR;
 	if(request)
 	{
@@ -34,7 +36,7 @@ OCEntityHandlerResult Resource::entityHandler(std::shared_ptr<OCResourceRequest>
 		int requestFlag = request->getRequestHandlerFlag();
 		if(requestFlag & RequestHandlerFlag::RequestFlag)
 		{
-			cout << "\t\trequestFlag : Request\n";		
+//			cout << "\t\trequestFlag : Request\n";		
 			auto pResponse = std::make_shared<OC::OCResourceResponse>();
 			pResponse->setRequestHandle(request->getRequestHandle());
 			pResponse->setResourceHandle(request->getResourceHandle());

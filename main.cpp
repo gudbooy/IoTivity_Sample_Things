@@ -1,6 +1,5 @@
 #include "simple_server_temp.h"
 #include "simple_server_humidity.h"
-#include "simple_server_light.h"
 
 static const char* SVR_DB_FILE_NAME = "./oic_svr_db_server.dat";
 
@@ -13,7 +12,7 @@ int main(void)
 {
 	TempResource *myTemp = NULL;
 	HumidityResource *myHumidity = NULL;
-	LightResource *myLight = NULL;
+
 	OCPersistentStorage ps {client_open, fread, fwrite, fclose, unlink };
 	PlatformConfig cfg {
 			OC::ServiceType::InProc,
@@ -27,17 +26,15 @@ int main(void)
 	try
 	{
 		// Create the instance of the resource class
-//		myTemp = new TempResource();
-//		myHumidity = new HumidityResource();
-		myLight = new LightResource();
+		myTemp = new TempResource();
+		myHumidity = new HumidityResource();
 		// Invoke createResource function of class light.
-/*		myTemp->createResource();
+		myTemp->createResource();
 		std::cout << "Created resource. Temp" << std::endl;
 
 		myHumidity->createResource();
 		std::cout << "Created resource. Humidity" << std::endl;
-	*/
-		myLight->createResource();
+	
 		// A condition variable will free the mutex it is given, then do a non-
 		// intensive block until 'notify' is called on it.  In this case, since we
 		// don't ever call cv.notify, this should be a non-processor intensive version

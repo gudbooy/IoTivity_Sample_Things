@@ -6,7 +6,7 @@ class HumidityResource : public Resource
 	public:
 		HumidityResource()
 			:m_name("Simple_Humid"), m_state(false), 
-			m_humidity(0.0), Resource("/a/humid", "core.humidity")
+			m_humidity(0.0), Resource("/a/humidity", "core.humidity")
 		{
 			m_rep.setValue("state", m_state);
 			m_rep.setValue("humidity", m_humidity);

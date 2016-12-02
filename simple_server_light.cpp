@@ -3,7 +3,7 @@
 OCRepresentation LightResource::get()
 {
 	m_rep.setValue("state", m_state);
-
+	m_rep.setValue("power", m_power);
 	return m_rep;
 }
 

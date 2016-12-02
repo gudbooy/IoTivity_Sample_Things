@@ -2,8 +2,8 @@
 #include "resource.h"
 void Resource::createResource()
 {
-	std::string resourceTypeName = m_uri;
-	std::string resourceURI = m_resourceTypeName;
+	std::string resourceTypeName = 	m_resourceTypeName;
+	std::string resourceURI = m_uri;
 	std::string resourceInterface = DEFAULT_INTERFACE;
 	uint8_t resourceProperty;
 	resourceProperty = OC_DISCOVERABLE | OC_OBSERVABLE;

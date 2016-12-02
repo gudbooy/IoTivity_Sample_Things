@@ -14,11 +14,11 @@ class TempResource : public Resource
 		}
   	void put(OCRepresentation& rep);
 		OCRepresentation get();
+		void* changeResourceRepresentation(void *param);
 	private:
 		std::string m_name;
 		bool m_state;
 		double m_temp;
-		std::string m_tempUri;
 };
 
 #endif /*_SIMPLE_SERVER_TEMP_H_ */

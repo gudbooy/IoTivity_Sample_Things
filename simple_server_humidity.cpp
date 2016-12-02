@@ -25,3 +25,8 @@ void HumidityResource::put(OCRepresentation& rep)
 		cout << e.what() << endl;
 	}
 }
+void * HumidityResource::changeResourceRepresentation(void * param)
+{
+
+
+}

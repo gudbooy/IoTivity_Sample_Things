@@ -84,6 +84,31 @@ OCEntityHandlerResult Resource::entityHandler(std::shared_ptr<OCResourceRequest>
 		if(requestFlag & RequestHandlerFlag::ObserverFlag)
 		{
 			cout << "Observe Request\n";
+			ObservationInfo observationInfo = request->getObservationInfo();
+			if(ObserveAction::ObserveRegister == observationInfo.action)
+			{
+				m_interestedObservers.push_back(observationInfo.obsId);
+			}
+			else if(ObserveAction::ObserveUnregister == observationInfo.action)
+			{
+				 m_interestedObservers.erase(std::remove(
+							 											m_interestedObservers.begin(),
+							 											m_interestedObservers.end(),
+							 											observationInfo.obsId),
+						 												m_interestedObservers.end());
+			}
+			pthread_t threadId;
+			cout << "\t\trequestFlag : Observer\n";
+			gObservation = 1;
+			static int startedThread = 0;
+			if(!startedThread)
+			{
+				 pthread_create (&threadId, NULL, &Resource::changeResourceRepresentation_ptr, 
+						 this);
+
+				 startedThread = 1;
+			}
+			ehResult = OC_EH_OK;
 		}
 	}
 	else

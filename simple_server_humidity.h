@@ -14,7 +14,7 @@ class HumidityResource : public Resource
 		}
 		void put(OCRepresentation& rep);
 		OCRepresentation get();
-
+		void* changeResourceRepresentation(void *param);
 	private:
 		std::string m_name;
 		bool m_state;

@@ -25,3 +25,7 @@ void TempResource::put(OCRepresentation& rep)
 		cout << e.what() << endl;
 	}
 }
+void* TempResource::changeResourceRepresentation(void *param)
+{
+
+}

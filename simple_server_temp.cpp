@@ -3,13 +3,15 @@
 OCRepresentation TempResource::get()
 {
 	m_rep.setValue("state", m_state);
+	mtx.lock();
 	m_rep.setValue("temp", m_temp);
-
+	mtx.unlock();
 	return m_rep;
 }
 
 void TempResource::put(OCRepresentation& rep)
 {
+	mtx.lock();
 	try {
 		if (rep.getValue("state", m_state))
 			cout << "\t\t\t\t" << "state: " << m_state << endl;
@@ -24,6 +26,7 @@ void TempResource::put(OCRepresentation& rep)
 	catch (exception& e){
 		cout << e.what() << endl;
 	}
+	mtx.unlock();
 }
 
 void TempResource::sensorValueRead(void *param)
@@ -40,25 +43,25 @@ void TempResource::sensorValueRead(void *param)
 
 void* TempResource::changeResourceRepresentation(void *param)
 {	
-	int count = 1;
 	TempResource* this_ptr =  (TempResource*)param;	
 	while(1)
 	{
-		sleep(3);
+		sleep(2);
 		if (gObservation)
 		{
-			if(count % 2 == 1){
-				m_temp += rand()%5;
-				count = 2;
-			}
-			else{
-				m_temp -= rand()%5;
-				count = 1;
-			}
+			
 			OCStackResult result = OC_STACK_OK;
 
-			result = OCPlatform::notifyAllObservers(this_ptr->getHandle());
-			
+			std::shared_ptr<OCResourceResponse> resourceResponse =
+			{std::make_shared<OCResourceResponse>()};
+
+			resourceResponse->setErrorCode(200);
+			resourceResponse->setResourceRepresentation(this_ptr->get(), DEFAULT_INTERFACE);
+
+			result = OCPlatform::notifyListOfObservers( this_ptr->getHandle(),
+					this_ptr->m_interestedObservers,
+					resourceResponse);
+
 			if(OC_STACK_NO_OBSERVERS == result)
 			{
 				cout << "No More observers, stopping notifications" << endl;
